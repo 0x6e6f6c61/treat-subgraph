@@ -5,7 +5,6 @@ import {
 } from '@graphprotocol/graph-ts'
 
 import {
-  Event,
   Transaction,
   Account,
   TokenRegistry,
@@ -13,11 +12,7 @@ import {
   Balance,
   Transfer,
   Approval,
-  Sale,
-  SecondarySale,
-  Treat,
-  Creator,
-  User
+  Sale
 } from '../generated/schema'
 
 import {
@@ -41,8 +36,10 @@ function replaceAll(input: string, search: string[], replace: string): string {
 }
 
 export function handleOnNftSold(event: OnNftSoldEvent) : void {
-  let purchase = new SecondarySale(event.transaction.hash.toHex())
-  purchase.treatPurchased = event.params.nftId
+  let purchase = new Sale(event.transaction.hash.toHex())
+  let txPurchase = purchase.treatsPurchased
+  txPurchase.push(event.params.nftId)
+  purchase.treatsPurchased = txPurchase
   purchase.cost = event.transaction.value
   purchase.purchaseDate = event.block.timestamp
   //purchase.sourceContract = event.transaction.to

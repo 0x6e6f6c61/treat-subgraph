@@ -75,60 +75,6 @@ export class Transaction extends Entity {
   }
 }
 
-export class Event extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("transaction", Value.fromString(""));
-    this.set("timestamp", Value.fromBigInt(BigInt.zero()));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Event entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save Event entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("Event", id.toString(), this);
-    }
-  }
-
-  static load(id: string): Event | null {
-    return changetype<Event | null>(store.get("Event", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get transaction(): string {
-    let value = this.get("transaction");
-    return value!.toString();
-  }
-
-  set transaction(value: string) {
-    this.set("transaction", Value.fromString(value));
-  }
-
-  get timestamp(): BigInt {
-    let value = this.get("timestamp");
-    return value!.toBigInt();
-  }
-
-  set timestamp(value: BigInt) {
-    this.set("timestamp", Value.fromBigInt(value));
-  }
-}
-
 export class Account extends Entity {
   constructor(id: string) {
     super();
@@ -680,175 +626,18 @@ export class Approval extends Entity {
   }
 }
 
-export class Treat extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("treatId", Value.fromBigInt(BigInt.zero()));
-    this.set("creator", Value.fromString(""));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Treat entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save Treat entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("Treat", id.toString(), this);
-    }
-  }
-
-  static load(id: string): Treat | null {
-    return changetype<Treat | null>(store.get("Treat", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get treatId(): BigInt {
-    let value = this.get("treatId");
-    return value!.toBigInt();
-  }
-
-  set treatId(value: BigInt) {
-    this.set("treatId", Value.fromBigInt(value));
-  }
-
-  get creator(): string {
-    let value = this.get("creator");
-    return value!.toString();
-  }
-
-  set creator(value: string) {
-    this.set("creator", Value.fromString(value));
-  }
-}
-
-export class User extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("user", Value.fromBytes(Bytes.empty()));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save User entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save User entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("User", id.toString(), this);
-    }
-  }
-
-  static load(id: string): User | null {
-    return changetype<User | null>(store.get("User", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get user(): Bytes {
-    let value = this.get("user");
-    return value!.toBytes();
-  }
-
-  set user(value: Bytes) {
-    this.set("user", Value.fromBytes(value));
-  }
-}
-
-export class Creator extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("user", Value.fromBytes(Bytes.empty()));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Creator entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save Creator entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("Creator", id.toString(), this);
-    }
-  }
-
-  static load(id: string): Creator | null {
-    return changetype<Creator | null>(store.get("Creator", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get user(): Bytes {
-    let value = this.get("user");
-    return value!.toBytes();
-  }
-
-  set user(value: Bytes) {
-    this.set("user", Value.fromBytes(value));
-  }
-
-  get created(): Array<string> | null {
-    let value = this.get("created");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toStringArray();
-    }
-  }
-
-  set created(value: Array<string> | null) {
-    if (!value) {
-      this.unset("created");
-    } else {
-      this.set("created", Value.fromStringArray(<Array<string>>value));
-    }
-  }
-}
-
 export class Sale extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("treatPurchased", Value.fromBigInt(BigInt.zero()));
+    this.set("treatsPurchased", Value.fromBigIntArray(new Array(0)));
     this.set("cost", Value.fromBigInt(BigInt.zero()));
     this.set("purchaseDate", Value.fromBigInt(BigInt.zero()));
     this.set("sourceContract", Value.fromBytes(Bytes.empty()));
     this.set("quantity", Value.fromBigInt(BigInt.zero()));
+    this.set("seller", Value.fromBytes(Bytes.empty()));
+    this.set("buyer", Value.fromBytes(Bytes.empty()));
   }
 
   save(): void {
@@ -877,99 +666,13 @@ export class Sale extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get treatPurchased(): BigInt {
-    let value = this.get("treatPurchased");
-    return value!.toBigInt();
+  get treatsPurchased(): Array<BigInt> {
+    let value = this.get("treatsPurchased");
+    return value!.toBigIntArray();
   }
 
-  set treatPurchased(value: BigInt) {
-    this.set("treatPurchased", Value.fromBigInt(value));
-  }
-
-  get cost(): BigInt {
-    let value = this.get("cost");
-    return value!.toBigInt();
-  }
-
-  set cost(value: BigInt) {
-    this.set("cost", Value.fromBigInt(value));
-  }
-
-  get purchaseDate(): BigInt {
-    let value = this.get("purchaseDate");
-    return value!.toBigInt();
-  }
-
-  set purchaseDate(value: BigInt) {
-    this.set("purchaseDate", Value.fromBigInt(value));
-  }
-
-  get sourceContract(): Bytes {
-    let value = this.get("sourceContract");
-    return value!.toBytes();
-  }
-
-  set sourceContract(value: Bytes) {
-    this.set("sourceContract", Value.fromBytes(value));
-  }
-
-  get quantity(): BigInt {
-    let value = this.get("quantity");
-    return value!.toBigInt();
-  }
-
-  set quantity(value: BigInt) {
-    this.set("quantity", Value.fromBigInt(value));
-  }
-}
-
-export class SecondarySale extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("treatPurchased", Value.fromBigInt(BigInt.zero()));
-    this.set("cost", Value.fromBigInt(BigInt.zero()));
-    this.set("purchaseDate", Value.fromBigInt(BigInt.zero()));
-    this.set("sourceContract", Value.fromBytes(Bytes.empty()));
-    this.set("quantity", Value.fromBigInt(BigInt.zero()));
-    this.set("seller", Value.fromBytes(Bytes.empty()));
-    this.set("buyer", Value.fromBytes(Bytes.empty()));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save SecondarySale entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save SecondarySale entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("SecondarySale", id.toString(), this);
-    }
-  }
-
-  static load(id: string): SecondarySale | null {
-    return changetype<SecondarySale | null>(store.get("SecondarySale", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get treatPurchased(): BigInt {
-    let value = this.get("treatPurchased");
-    return value!.toBigInt();
-  }
-
-  set treatPurchased(value: BigInt) {
-    this.set("treatPurchased", Value.fromBigInt(value));
+  set treatsPurchased(value: Array<BigInt>) {
+    this.set("treatsPurchased", Value.fromBigIntArray(value));
   }
 
   get cost(): BigInt {
@@ -1024,59 +727,5 @@ export class SecondarySale extends Entity {
 
   set buyer(value: Bytes) {
     this.set("buyer", Value.fromBytes(value));
-  }
-}
-
-export class TreatBalance extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("amount", Value.fromBigInt(BigInt.zero()));
-    this.set("treat", Value.fromString(""));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save TreatBalance entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save TreatBalance entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("TreatBalance", id.toString(), this);
-    }
-  }
-
-  static load(id: string): TreatBalance | null {
-    return changetype<TreatBalance | null>(store.get("TreatBalance", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get amount(): BigInt {
-    let value = this.get("amount");
-    return value!.toBigInt();
-  }
-
-  set amount(value: BigInt) {
-    this.set("amount", Value.fromBigInt(value));
-  }
-
-  get treat(): string {
-    let value = this.get("treat");
-    return value!.toString();
-  }
-
-  set treat(value: string) {
-    this.set("treat", Value.fromString(value));
   }
 }

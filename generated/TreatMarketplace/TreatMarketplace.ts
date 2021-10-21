@@ -707,56 +707,6 @@ export class TreatMarketplace extends ethereum.SmartContract {
   }
 }
 
-export class ConstructorCall extends ethereum.Call {
-  get inputs(): ConstructorCall__Inputs {
-    return new ConstructorCall__Inputs(this);
-  }
-
-  get outputs(): ConstructorCall__Outputs {
-    return new ConstructorCall__Outputs(this);
-  }
-}
-
-export class ConstructorCall__Inputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-
-  get _treasuryAddress(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get _treatMinterAddress(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get _treasuryPercentage(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-
-  get _creatorPercentage(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
-  }
-
-  get _tittyFundAddress(): Address {
-    return this._call.inputValues[4].value.toAddress();
-  }
-
-  get _treatDaoAddress(): Address {
-    return this._call.inputValues[5].value.toAddress();
-  }
-}
-
-export class ConstructorCall__Outputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-}
-
 export class CancelOrderCall extends ethereum.Call {
   get inputs(): CancelOrderCall__Inputs {
     return new CancelOrderCall__Inputs(this);
@@ -1235,6 +1185,56 @@ export class TransferOwnershipCall__Outputs {
   _call: TransferOwnershipCall;
 
   constructor(call: TransferOwnershipCall) {
+    this._call = call;
+  }
+}
+
+export class ConstructorCall extends ethereum.Call {
+  get inputs(): ConstructorCall__Inputs {
+    return new ConstructorCall__Inputs(this);
+  }
+
+  get outputs(): ConstructorCall__Outputs {
+    return new ConstructorCall__Outputs(this);
+  }
+}
+
+export class ConstructorCall__Inputs {
+  _call: ConstructorCall;
+
+  constructor(call: ConstructorCall) {
+    this._call = call;
+  }
+
+  get _treasuryAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get _treatMinterAddress(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
+  get _treasuryPercentage(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get _creatorPercentage(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
+  }
+
+  get _tittyFundAddress(): Address {
+    return this._call.inputValues[4].value.toAddress();
+  }
+
+  get _treatDaoAddress(): Address {
+    return this._call.inputValues[5].value.toAddress();
+  }
+}
+
+export class ConstructorCall__Outputs {
+  _call: ConstructorCall;
+
+  constructor(call: ConstructorCall) {
     this._call = call;
   }
 }

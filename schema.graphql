@@ -5,7 +5,7 @@ type Transaction @entity {
   events: Event! @derivedFrom(field: "transaction")
 }
 
-type Event @entity {
+interface Event @entity {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
@@ -69,45 +69,13 @@ type Approval implements Event @entity {
 	value:                        BigInt!
 }
 
-type Treat @entity {
-  id: ID!
-  treatId: BigInt!
-  creator: Creator!
-}
-
-type User @entity {
-  id: ID!
-  user: Bytes!
-}
-
-type Creator implements User @entity {
-  id: ID!
-  user: Bytes!
-  created: [Treat!] @derivedFrom(field: "creator")
-}
-
 type Sale @entity {
   id: ID!
-  treatPurchased: BigInt!
-  cost: BigInt!
-  purchaseDate: BigInt!
-  sourceContract: Bytes!
-  quantity: BigInt!
-}
-
-type SecondarySale implements Sale @entity {
-  id: ID!
-  treatPurchased: BigInt!
+  treatsPurchased: [BigInt!]!
   cost: BigInt!
   purchaseDate: BigInt!
   sourceContract: Bytes!
   quantity: BigInt!
   seller: Bytes!
   buyer: Bytes!
-}
-
-type TreatBalance @entity {
-  id: ID!
-  amount: BigInt!
-  treat: Treat!
 }
