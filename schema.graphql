@@ -1,0 +1,113 @@
+type Transaction @entity {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  events: Event! @derivedFrom(field: "transaction")
+}
+
+type Event @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+}
+
+type Account @entity {
+	id:                           ID!
+	balances:                     [Balance!]! @derivedFrom(field: "account")
+	transfersOperator:            [Transfer!]! @derivedFrom(field: "operator")
+	transfersFrom:                [Transfer!]! @derivedFrom(field: "from")
+	transfersTo:                  [Transfer!]! @derivedFrom(field: "to")
+	approvalsOwner:               [Approval!]! @derivedFrom(field: "owner")
+	approvalsSpender:             [Approval!]! @derivedFrom(field: "spender")
+}
+
+type TokenRegistry @entity {
+	id:                           ID!
+	tokens:                       [Token!]! @derivedFrom(field: "registry")
+}
+
+type Token @entity {
+	id:                           ID!
+	registry:                     TokenRegistry!
+	identifier:                   BigInt!
+	URI:                          String
+	totalSupply:                  BigInt!
+	balances:                     [Balance!]! @derivedFrom(field: "token")
+	transfers:                    [Transfer!]! @derivedFrom(field: "token")
+	approvals:                    [Transfer!]! @derivedFrom(field: "token")
+}
+
+type Balance @entity {
+	id:                           ID!
+	token:                        Token!
+	account:                      Account!
+	value:                        BigInt!
+	transfersFrom:                [Transfer!]! @derivedFrom(field: "fromBalance")
+	transfersTo:                  [Transfer!]! @derivedFrom(field: "toBalance")
+}
+
+type Transfer implements Event @entity {
+	id:                           ID!
+	transaction:                  Transaction!
+	timestamp:                    BigInt!
+	token:                        Token!
+	operator:                     Account!
+	from:                         Account!
+	fromBalance:                  Balance
+	to:                           Account!
+	toBalance:                    Balance
+	value:                        BigInt!
+}
+
+type Approval implements Event @entity {
+	id:                           ID!
+	transaction:                  Transaction!
+	timestamp:                    BigInt!
+	token:                        Token!
+	owner:                        Account!
+	spender:                      Account!
+	value:                        BigInt!
+}
+
+type Treat @entity {
+  id: ID!
+  treatId: BigInt!
+  creator: Creator!
+}
+
+type User @entity {
+  id: ID!
+  user: Bytes!
+}
+
+type Creator implements User @entity {
+  id: ID!
+  user: Bytes!
+  created: [Treat!] @derivedFrom(field: "creator")
+}
+
+type Sale @entity {
+  id: ID!
+  treatPurchased: BigInt!
+  cost: BigInt!
+  purchaseDate: BigInt!
+  sourceContract: Bytes!
+  quantity: BigInt!
+}
+
+type SecondarySale implements Sale @entity {
+  id: ID!
+  treatPurchased: BigInt!
+  cost: BigInt!
+  purchaseDate: BigInt!
+  sourceContract: Bytes!
+  quantity: BigInt!
+  seller: Bytes!
+  buyer: Bytes!
+}
+
+type TreatBalance @entity {
+  id: ID!
+  amount: BigInt!
+  treat: Treat!
+}

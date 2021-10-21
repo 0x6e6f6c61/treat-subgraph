@@ -1,0 +1,47 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: TreatNFTMinterV2
+    network: bsc
+    source:
+      address: "0x36F8f51f65Fe200311F709b797baF4E193DD0b0D"
+      abi: TreatNFTMinterV2
+      startBlock: 9302400
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - TransferBatch
+        - TransferSingle
+      abis:
+        - name: TreatNFTMinterV2
+          file: ./abis/TreatNFTMinterV2.json
+      eventHandlers:
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatch
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+      file: ./src/minter.ts
+  - kind: ethereum/contract
+    name: TreatMarketplace
+    network: bsc
+    source:
+      address: "0xA38978E839c08046FA80B0fee55736253Ab3B8a3"
+      abi: TreatMarketplace
+      startBlock: 9530514
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - OnNftSold
+      abis:
+        - name: TreatMarketplace
+          file: ./abis/TreatMarketplace.json
+      eventHandlers:
+        - event: OnNftSold(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleOnNftSold
+      file: ./src/resales.ts
