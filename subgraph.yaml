@@ -3,6 +3,32 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
+    name: TreatNFTMinter
+    network: bsc
+    source:
+      address: "0xde39d0b9a93dcd541c24e80c8361f362aab0f213"
+      abi: TreatNFTMinter
+      startBlock: 5708538
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - TransferBatch
+        - TransferSingle
+      abis:
+        - name: TreatNFTMinter
+          file: ./abis/TreatNFTMinter.json
+      callHandlers:
+        - function: create(uint256,uint256,string,bytes)
+          handler: handleCreate
+      eventHandlers:
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatch
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+      file: ./src/minterzero.ts
+  - kind: ethereum/contract
     name: TreatNFTMinterV2
     network: bsc
     source:

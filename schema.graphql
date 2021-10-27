@@ -19,6 +19,7 @@ type Account @entity {
 	transfersTo:                  [Transfer!]! @derivedFrom(field: "to")
 	approvalsOwner:               [Approval!]! @derivedFrom(field: "owner")
 	approvalsSpender:             [Approval!]! @derivedFrom(field: "spender")
+  tokensCreated:                [Token!]! @derivedFrom(field: "creator")
 }
 
 type TokenRegistry @entity {
@@ -35,6 +36,8 @@ type Token @entity {
 	balances:                     [Balance!]! @derivedFrom(field: "token")
 	transfers:                    [Transfer!]! @derivedFrom(field: "token")
 	approvals:                    [Transfer!]! @derivedFrom(field: "token")
+  creator:                      Account!
+  totalSales:                   BigInt!
 }
 
 type Balance @entity {

@@ -127,6 +127,13 @@ function handleMint(
       purchase.treatsPurchased = txPurchase
       purchase.save()
     }
+    let token = Token.load(event.params._operator.toString().concat('-').concat(event.params._id.toString()))
+    if (token.totalSales == null) {
+      token.totalSales = new BigInt(1)
+    } else {
+      token.totalSales = new BigInt(Number(token.totalSales) + 1)
+    }
+    token.save()
 }
 
 export function handleTransferSingle(event: TransferSingleEvent): void {

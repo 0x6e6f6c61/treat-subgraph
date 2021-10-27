@@ -160,6 +160,15 @@ export class Account extends Entity {
   set approvalsSpender(value: Array<string>) {
     this.set("approvalsSpender", Value.fromStringArray(value));
   }
+
+  get tokensCreated(): Array<string> {
+    let value = this.get("tokensCreated");
+    return value!.toStringArray();
+  }
+
+  set tokensCreated(value: Array<string>) {
+    this.set("tokensCreated", Value.fromStringArray(value));
+  }
 }
 
 export class TokenRegistry extends Entity {
@@ -212,6 +221,8 @@ export class Token extends Entity {
     this.set("registry", Value.fromString(""));
     this.set("identifier", Value.fromBigInt(BigInt.zero()));
     this.set("totalSupply", Value.fromBigInt(BigInt.zero()));
+    this.set("creator", Value.fromString(""));
+    this.set("totalSales", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -309,6 +320,24 @@ export class Token extends Entity {
 
   set approvals(value: Array<string>) {
     this.set("approvals", Value.fromStringArray(value));
+  }
+
+  get creator(): string {
+    let value = this.get("creator");
+    return value!.toString();
+  }
+
+  set creator(value: string) {
+    this.set("creator", Value.fromString(value));
+  }
+
+  get totalSales(): BigInt {
+    let value = this.get("totalSales");
+    return value!.toBigInt();
+  }
+
+  set totalSales(value: BigInt) {
+    this.set("totalSales", Value.fromBigInt(value));
   }
 }
 
