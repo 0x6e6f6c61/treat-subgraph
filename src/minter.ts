@@ -129,12 +129,16 @@ function handleMint(
       purchase.save()
     }
     let token = Token.load(event.params._operator.toString().concat('-').concat(event.params._id.toString()))
-    if (token.totalSales == constants.BIGINT_ZERO) {
-      token.totalSales = constants.BIGINT_ONE
+    if (token == null) {
+        //do nothing
     } else {
-      token.totalSales = new BigInt(Number(token.totalSales) + 1)
+      if (token.totalSales == constants.BIGINT_ZERO) {
+        token.totalSales = constants.BIGINT_ONE
+      } else {
+        token.totalSales = token.totalSales.plus(constants.BIGINT_ONE)
+      }
+      token.save()
     }
-    token.save()
 }
 
 export function handleTransferSingle(event: TransferSingleEvent): void {
