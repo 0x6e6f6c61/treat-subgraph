@@ -45,6 +45,7 @@ import {
         token.registry = registry.id
         token.identifier = id
         token.totalSupply = constants.BIGINT_ZERO
+        token.totalSales = constants.BIGINT_ZERO
     }
     return token as Token
   }
@@ -128,8 +129,8 @@ import {
         purchase.save()
       }
       let token = Token.load(event.params._operator.toString().concat('-').concat(event.params._id.toString()))
-      if (token.totalSales == null) {
-        token.totalSales = new BigInt(1)
+      if (token.totalSales == constants.BIGINT_ZERO) {
+        token.totalSales = constants.BIGINT_ONE
       } else {
         token.totalSales = new BigInt(Number(token.totalSales) + 1)
       }
