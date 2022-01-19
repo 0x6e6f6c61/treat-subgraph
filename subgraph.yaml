@@ -11,17 +11,18 @@ dataSources:
       startBlock: 5708538
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - TransferBatch
         - TransferSingle
       abis:
+        - name: TreatMart0
+          file: ./abis/TreatMart0.json
+        - name: TreatBundleMart0
+          file: ./abis/TreatBundleMart0.json
         - name: TreatNFTMinter
           file: ./abis/TreatNFTMinter.json
-      callHandlers:
-        - function: create(uint256,uint256,string,bytes)
-          handler: handleCreate
       eventHandlers:
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
           handler: handleTransferBatch
@@ -37,12 +38,16 @@ dataSources:
       startBlock: 9302400
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - TransferBatch
         - TransferSingle
       abis:
+        - name: TreatMart1
+          file: ./abis/TreatMart1.json
+        - name: TreatMart2
+          file: ./abis/TreatMart2.json
         - name: TreatNFTMinterV2
           file: ./abis/TreatNFTMinterV2.json
       eventHandlers:
@@ -60,7 +65,7 @@ dataSources:
       startBlock: 9530514
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - OnNftSold
@@ -71,3 +76,181 @@ dataSources:
         - event: OnNftSold(indexed address,indexed address,indexed uint256,uint256)
           handler: handleOnNftSold
       file: ./src/resales.ts
+  - kind: ethereum/contract
+    name: SweetShop
+    network: bsc
+    source:
+      address: "0xE965D19FD021355fc85f4Cdcc856C018274cACF8"
+      abi: SweetShop
+      startBlock: 11771139
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Redeemed
+        - NFTCreatedAndAdded
+      abis:
+        - name: SweetShop
+          file: ./abis/SweetShop.json
+      eventHandlers:
+        - event: NFTCreatedAndAdded(uint256[],uint256[],bool[],address)
+          handler: handleNFTCreatedAndAdded
+        - event: Redeemed(indexed address,uint256)
+          handler: handleSweetShopRedeem
+      file: ./src/sweetshop.ts
+  - kind: ethereum/contract
+    name: SubscriberMart
+    network: bsc
+    source:
+      address: "0x16d68Fe18D8b7dFF8A8626c90AE5d2d949A7C7d5"
+      abi: SubscriberMart
+      startBlock: 10576764
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Redeemed
+        - NFTCreatedAndAdded
+      abis:
+        - name: SubscriberMart
+          file: ./abis/SubscriberMart.json
+      eventHandlers:
+        - event: NFTCreatedAndAdded(uint256[],uint256[],bool[],address)
+          handler: handleSubNFTCreatedAndAdded
+        - event: Redeemed(indexed address,uint256)
+          handler: handleSubShopRedeem
+      file: ./src/sweetshop.ts
+  - kind: ethereum/contract
+    name: SweetShop0
+    network: bsc
+    source:
+      address: "0x9F52D25473CE2DEc1b9D5F44Ad133Ab80BBa1f86"
+      abi: SweetShop0
+      startBlock: 10295080
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Redeemed
+        - NFTCreatedAndAdded
+      abis:
+        - name: SweetShop0
+          file: ./abis/SweetShop0.json
+      eventHandlers:
+        - event: NFTCreatedAndAdded(uint256[],uint256[],bool[],address)
+          handler: handleSS0NFTCreatedAndAdded
+        - event: Redeemed(indexed address,uint256)
+          handler: handleSweetShop0Redeem
+      file: ./src/sweetshop.ts
+  - kind: ethereum/contract
+    name: TreatMart0
+    network: bsc
+    source:
+      address: "0xD48E7709FAC65ad74E526D1fB3d9a3eDbCb15FE0"
+      abi: TreatMart0
+      startBlock: 5912359
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - NFTAdded
+        - Redeemed
+      abis:
+        - name: TreatMart0
+          file: ./abis/TreatMart0.json
+      eventHandlers:
+        - event: NFTAdded(uint256[],uint256,address)
+          handler: handleTreatV0NFTAdded
+        - event: Redeemed(indexed address,uint256)
+          handler: handleTreatV0NFTRedeemed
+      file: ./src/sweetshop.ts
+  - kind: ethereum/contract
+    name: TreatBundleMart0
+    network: bsc
+    source:
+      address: "0xb0685346A231272BDa0F30Eb46183F016E5f3dcF"
+      abi: TreatBundleMart0
+      startBlock: 7106754
+    mapping:
+      kind: ethereum/event
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      abis:
+        - name: TreatBundleMart0
+          file: ./abis/TreatBundleMart0.json
+      entities:
+        - SetAdded
+      eventHandlers:
+        - event: SetAdded(indexed uint256,uint256[],uint256,address)
+          handler: handleTreatBundleV0Added
+      file: ./src/sweetshop.ts
+  - kind: ethereum/contract
+    name: TreatMart1
+    network: bsc
+    source:
+      address: "0xC2Df967c8687c99c1f0cE394616e66A89F9F7363"
+      abi: TreatMart1
+      startBlock: 9588820
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - NFTAdded
+        - Redeemed
+      abis:
+        - name: TreatMart1
+          file: ./abis/TreatMart1.json
+      eventHandlers:
+        - event: NFTAdded(uint256[],uint256,address)
+          handler: handleTreatV1NFTAdded
+        - event: Redeemed(indexed address,uint256)
+          handler: handleTreatV1NFTRedeemed
+      file: ./src/sweetshop.ts
+  - kind: ethereum/contract
+    name: TreatMart2
+    network: bsc
+    source:
+      address: "0x741864585bf7e9C533d52fe02427cE4bf75678D4"
+      abi: TreatMart2
+      startBlock: 10295861
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - NFTAdded
+        - Redeemed
+      abis:
+        - name: TreatMart2
+          file: ./abis/TreatMart2.json
+      eventHandlers:
+        - event: NFTAdded(uint256[],uint256,address)
+          handler: handleTreatV2NFTAdded
+        - event: Redeemed(indexed address,uint256)
+          handler: handleTreatV2NFTRedeemed
+      file: ./src/sweetshop.ts
+  - kind: ethereum/contract
+    name: TreatMinterHelper0
+    network: bsc
+    source:
+      address: "0x3Da2011868dc84Af49Fbc6e5f97D8b2ea9998D76"
+      abi: TreatMinterHelper0
+      startBlock: 11772551
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - TotwNftsCreated
+      abis:
+        - name: TreatMinterHelper0
+          file: ./abis/TreatMinterHelper0.json
+      eventHandlers:
+        - event: TotwNftsCreated(uint256[],uint256[],address)
+          handler: handleTotwNftsCreated
+      file: ./src/sweetshop.ts

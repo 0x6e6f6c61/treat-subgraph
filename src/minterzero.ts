@@ -1,7 +1,12 @@
 import {
     ethereum,
     Address,
-    BigInt
+    BigInt,
+    Bytes,
+    ByteArray,
+    json,
+    JSONValueKind,
+    log
   } from '@graphprotocol/graph-ts'
   
   import {
@@ -20,6 +25,14 @@ import {
     TransferSingle as TransferSingleEvent,
     URI as URIEvent,
   } from '../generated/TreatNFTMinter/TreatNFTMinter'
+
+  import {
+    TreatMart0
+  } from '../generated/TreatMart0/TreatMart0'
+
+  import {
+    TreatBundleMart0
+  } from '../generated/TreatBundleMart0/TreatBundleMart0'
 
   
   import {
@@ -46,6 +59,7 @@ import {
         token.identifier = id
         token.totalSupply = constants.BIGINT_ZERO
         token.totalSales = constants.BIGINT_ZERO
+        token.totalSaleValue = constants.BIGINT_ZERO
     }
     return token as Token
   }
@@ -126,20 +140,75 @@ import {
         let txPurchase = purchase.treatsPurchased
         txPurchase.push(event.params._id)
         purchase.treatsPurchased = txPurchase
+        purchase.cost = event.transaction.value
+        purchase.purchaseDate = event.block.timestamp
+        purchase.sourceContract = event.params._operator
+        purchase.quantity = event.params._amount
+        purchase.seller = event.params._operator
+        purchase.buyer =  event.params._to
         purchase.save()
       }
-      let token = Token.load(event.params._operator.toString().concat('-').concat(event.params._id.toString()))
+      let token = Token.load(event.address.toHex().concat('-').concat(event.params._id.toHex()))
       if (token == null) {
           //do nothing
       } else {
-        if (token.totalSales == constants.BIGINT_ZERO) {
-          token.totalSales = constants.BIGINT_ONE
-        } else {
-          token.totalSales = token.totalSales.plus(constants.BIGINT_ONE)
-        }
+        let theAddress = event.transaction.to
+        token.totalSales = integers.increment(token.totalSales, event.params._amount)
         token.save()
+
+        if (theAddress) {
+          log.info('logging theAddress.toHexString: {}',[theAddress.toHexString()])
+          if(event.block.number > BigInt.fromU32(7106754)) {
+            let eventHex = event.transaction.input.toHexString()
+            log.info('logging method 4 byte signature: {}',[eventHex.substring(0,10)])
+            if (eventHex.substring(0,10) == "0x65ef6417") {
+              //let totwcontract = TreatMart0.bind(theAddress)
+              let totwbundlecontract = TreatBundleMart0.bind(theAddress)
+              //let creator = Account.load(totwcontract.treatModels(event.params._id).toHex())
+              let setId = parseInt(eventHex.substring(10),16) as i32
+              let creator = Account.load(totwbundlecontract.treatSetModels(BigInt.fromI32(setId)).toHex())
+              let setCost = totwbundlecontract.nftSetCosts(BigInt.fromI32(setId))
+              let nftSet = totwbundlecontract.getSetIds(BigInt.fromI32(setId))
+              let nftPurchaseAmount = setCost.div(BigInt.fromU32(nftSet.length))
+              log.info('logging nft bundle/set cost: {}',[setCost.toString()])
+              log.info('log single nft value from purchase: {}',[nftPurchaseAmount.toString()])
+              log.info('log token total Sales before adding current purchase: {}',[token.totalSaleValue.toString()])
+              token.totalSaleValue = integers.increment(token.totalSaleValue, nftPurchaseAmount)
+              log.info('log total sales of token after adding current purchase: {}',[token.totalSaleValue.toString()])
+              token.save()
+              if (!creator) {
+                //do nothing
+              } else {
+                creator.totalSales = integers.increment(creator.totalSales, nftPurchaseAmount)
+                creator.save()
+              }
+            } else {
+              if (theAddress.toString().toLowerCase() != "0xdE39D0B9A93dCD541c24E80c8361f362AAb0f213".toLowerCase()) {
+                let totwcontract = TreatMart0.bind(theAddress)
+                log.info('logging a single nft mint: {} ',[event.params._id.toString()])
+                let creator = Account.load(totwcontract.treatModels(event.params._id).toHex())
+                if(event.transaction.value > BigInt.fromU32(0)) {
+                  log.info('logging a single nft buy: {} ',[event.params._id.toString()])
+                  token.totalSaleValue = integers.increment(token.totalSaleValue, event.transaction.value)
+                  token.save()
+                  if (!creator) {
+                    //do nothing
+                  } else {
+                    log.info('logging a single nft creator increment from nft id: {} ',[event.params._id.toString()])
+                    creator.totalSales = integers.increment(creator.totalSales, event.transaction.value)
+                    creator.save()
+                  }
+                }
+              } else {
+                //do nothing since the minter itself is causing this transfersingle event.
+              }
+            }
+          }
+        } else {
+          //do nothing
+        }
       }
-  }
+    }
   
   export function handleTransferSingle(event: TransferSingleEvent): void {
     let registry = new TokenRegistry(event.address.toHex())

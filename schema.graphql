@@ -19,7 +19,8 @@ type Account @entity {
 	transfersTo:                  [Transfer!]! @derivedFrom(field: "to")
 	approvalsOwner:               [Approval!]! @derivedFrom(field: "owner")
 	approvalsSpender:             [Approval!]! @derivedFrom(field: "spender")
-  tokensCreated:                [Token!]! @derivedFrom(field: "creator")
+	tokens:						  [Token!]! @derivedFrom(field:"creator")
+	totalSales:					  BigInt!
 }
 
 type TokenRegistry @entity {
@@ -33,11 +34,14 @@ type Token @entity {
 	identifier:                   BigInt!
 	URI:                          String
 	totalSupply:                  BigInt!
+	maxSupply:					  BigInt!
 	balances:                     [Balance!]! @derivedFrom(field: "token")
 	transfers:                    [Transfer!]! @derivedFrom(field: "token")
 	approvals:                    [Transfer!]! @derivedFrom(field: "token")
-  creator:                      Account!
-  totalSales:                   BigInt!
+    totalSales:                   BigInt!
+	totalSaleValue:	              BigInt!
+	creator:					  Account
+	tokenType:					  BigInt
 }
 
 type Balance @entity {

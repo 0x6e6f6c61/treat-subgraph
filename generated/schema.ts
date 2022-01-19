@@ -79,6 +79,8 @@ export class Account extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("totalSales", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -161,13 +163,22 @@ export class Account extends Entity {
     this.set("approvalsSpender", Value.fromStringArray(value));
   }
 
-  get tokensCreated(): Array<string> {
-    let value = this.get("tokensCreated");
+  get tokens(): Array<string> {
+    let value = this.get("tokens");
     return value!.toStringArray();
   }
 
-  set tokensCreated(value: Array<string>) {
-    this.set("tokensCreated", Value.fromStringArray(value));
+  set tokens(value: Array<string>) {
+    this.set("tokens", Value.fromStringArray(value));
+  }
+
+  get totalSales(): BigInt {
+    let value = this.get("totalSales");
+    return value!.toBigInt();
+  }
+
+  set totalSales(value: BigInt) {
+    this.set("totalSales", Value.fromBigInt(value));
   }
 }
 
@@ -221,8 +232,9 @@ export class Token extends Entity {
     this.set("registry", Value.fromString(""));
     this.set("identifier", Value.fromBigInt(BigInt.zero()));
     this.set("totalSupply", Value.fromBigInt(BigInt.zero()));
-    this.set("creator", Value.fromString(""));
+    this.set("maxSupply", Value.fromBigInt(BigInt.zero()));
     this.set("totalSales", Value.fromBigInt(BigInt.zero()));
+    this.set("totalSaleValue", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -295,6 +307,15 @@ export class Token extends Entity {
     this.set("totalSupply", Value.fromBigInt(value));
   }
 
+  get maxSupply(): BigInt {
+    let value = this.get("maxSupply");
+    return value!.toBigInt();
+  }
+
+  set maxSupply(value: BigInt) {
+    this.set("maxSupply", Value.fromBigInt(value));
+  }
+
   get balances(): Array<string> {
     let value = this.get("balances");
     return value!.toStringArray();
@@ -322,15 +343,6 @@ export class Token extends Entity {
     this.set("approvals", Value.fromStringArray(value));
   }
 
-  get creator(): string {
-    let value = this.get("creator");
-    return value!.toString();
-  }
-
-  set creator(value: string) {
-    this.set("creator", Value.fromString(value));
-  }
-
   get totalSales(): BigInt {
     let value = this.get("totalSales");
     return value!.toBigInt();
@@ -338,6 +350,49 @@ export class Token extends Entity {
 
   set totalSales(value: BigInt) {
     this.set("totalSales", Value.fromBigInt(value));
+  }
+
+  get totalSaleValue(): BigInt {
+    let value = this.get("totalSaleValue");
+    return value!.toBigInt();
+  }
+
+  set totalSaleValue(value: BigInt) {
+    this.set("totalSaleValue", Value.fromBigInt(value));
+  }
+
+  get creator(): string | null {
+    let value = this.get("creator");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set creator(value: string | null) {
+    if (!value) {
+      this.unset("creator");
+    } else {
+      this.set("creator", Value.fromString(<string>value));
+    }
+  }
+
+  get tokenType(): BigInt | null {
+    let value = this.get("tokenType");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set tokenType(value: BigInt | null) {
+    if (!value) {
+      this.unset("tokenType");
+    } else {
+      this.set("tokenType", Value.fromBigInt(<BigInt>value));
+    }
   }
 }
 
